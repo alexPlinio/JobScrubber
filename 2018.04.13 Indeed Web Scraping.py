@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Spyder Editor
-
-This is a temporary script file.
+Web Scrapper 
 """
-from bs4 import BeautifulSoup # For HTML parsing
+ # For HTML parsing
+from bs4 import BeautifulSoup
 
 import urllib.request  # Website connections (Ex import urllib2)
 import re # Regular expressions
+import nltk
+#nltk.download('stopwords')
 from time import sleep # To prevent overwhelming the server between connections
 from collections import Counter # Keep track of our term counts
 from nltk.corpus import stopwords # Filter out stopwords, such as 'the', 'or', 'and'
@@ -35,14 +36,14 @@ def text_cleaner(website):
     except: 
         return   # Need this in case the website isn't there anymore or some other weird connection problem 
     
-    soup_obj = BeautifulSoup(site) # Get the html from the site
+    soup_obj = BeautifulSoup(site,"lxml") # Get the html from the site
     
     for script in soup_obj(["script", "style"]):
         script.extract() # Remove these two elements from the BS4 object
     
     
 
-    text = soup_obj.get_text() # Get the text from this
+    text = soup_obj.get_text() #.decode('utf-8') # Get the text from this and transfor in text using UTF-8
     
         
     
@@ -67,9 +68,11 @@ def text_cleaner(website):
     except:                                                            # in a way that this works, can occasionally throw
         return                                                         # an exception
        
-    print("TEST>>>",text)    
-    text = re.sub("[^a-zA-Z.+3]"," ", text)  # Now get rid of any terms that aren't words (include 3 for d3.js)
+   # print("TEST>>>",text)    
+    text = re.sub("[^a-zA-Z.+3]"," ", text.decode("utf-8", "strict"))  # Now get rid of any terms that aren't words (include 3 for d3.js)
                                                 # Also include + for C++
+   # print("<<<<TEST COMPLETED>>>")                                            
+                                                
         
        
     text = text.lower().split()  # Go to lower case and split them apart
@@ -89,5 +92,5 @@ def text_cleaner(website):
 """--------------------------------------------------------------------------"""
 
 sample=text_cleaner('https://www.indeed.com/viewjob?jk=d59a404159a0bd6d&from=recjobs&vjtk=1cb0sdohcbqhu91c')
-print(type(sample))
-#print(sample[:20]) # Just show the first 20 words
+#print(type(sample))
+print(sample[:20]) # Just show the first 20 words
